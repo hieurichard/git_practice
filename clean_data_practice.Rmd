@@ -1,0 +1,48 @@
+---
+title: "basic notebook"
+output: html_document
+date: "2023-02-12"
+params:
+  is_noinfo: both
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+library(here)
+library(tidyverse)
+```
+
+```{r}
+pcb_summary <-
+  read_csv(here('data/raw/221110-pcb-summary.csv'),
+           col_types = c(loan_code = col_character()))
+```
+
+```{r}
+pcb_summary <-
+  pcb_summary %>%
+  select(-c(created_on, id)) %>%
+  distinct()
+```
+
+```{r}
+pcb_summary %>% 
+  group_by(loan_code) %>% 
+  summarise(n_loan_code = n()) %>% 
+  filter(n_loan_code > 1)
+```
+
+```{r}
+pcb_summary <-
+  pcb_summary %>%
+  filter(loan_code != 'MM22062146132' |
+           is_noinfo == 0)
+```
+
+```{r}
+pcb_summary
+```
+
